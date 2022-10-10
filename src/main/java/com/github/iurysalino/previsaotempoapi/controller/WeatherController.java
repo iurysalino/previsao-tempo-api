@@ -17,30 +17,11 @@ import org.springframework.web.client.RestTemplate;
 public class WeatherController {
 
     @Autowired
-    WeatherServiceImpl weatherService;
-    Main main = new Main();
-    @Value("${api.key}")
-    private String apiKey;
-    @Value("${url.api}")
-    private String urlApi;
+    WeatherServiceImpl weatherServiceImpl;
+
 
     @GetMapping("{cityName}")
     public Root getWeatherByCityName(@PathVariable String cityName){
-        RestTemplate restTemplate = new RestTemplate();
-        StringBuilder stringBuilder = new StringBuilder();
-        String urlFinal = stringBuilder
-                .append(urlApi)
-                .append(cityName)
-                .append("&lang=pt_br")
-                .append("&appid=")
-                .append(apiKey)
-                .append("&units=metric")
-                .toString();
-        ResponseEntity<Root> root = restTemplate.getForEntity(urlFinal, Root.class);
-        System.out.println("Temperatura: "+ root.getBody().getMain().getTemp());
-        System.out.println("Temperatura Máxima: "+ root.getBody().getMain().getTemp_max());
-        System.out.println("Temperatura Mínima: "+ root.getBody().getMain().getTemp_min());
-        System.out.println("Céu: "+ root.getBody().getWeather().get(0).getDescription());
-        return root.getBody();
+        return weatherServiceImpl.findConditionsByCityName(cityName);
     }
 }

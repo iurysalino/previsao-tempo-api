@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface WeatherService {
-    Root findByCityName(String cityName);
+    Root findConditionsByCityName(String cityName);
 }
