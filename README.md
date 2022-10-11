@@ -4,7 +4,7 @@ This project was generated with Spring Starter (https://start.spring.io/) versio
 
 ## Development server
 
-Run for a SpringApplication class. Navigate to `http://localhost:8080/`. The application will automatically reload if you change any of the source files.
+Run for a SpringApplication class. Navigate to `http://localhost:8080/`.
 
 ## Stack
 
