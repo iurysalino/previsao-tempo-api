@@ -8,10 +8,6 @@ Run for a SpringApplication class. Navigate to `http://localhost:8080/`.
 
 ## Stack
 
-<div style="display: inline_block"><br>
-  <img align="center" alt="Rafa-Java" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-plain.svg">
-</div>
-
 🖱 IntelliJ Idea </br>
 🖱 Maven </br>
 🖱 Lombok </br>
