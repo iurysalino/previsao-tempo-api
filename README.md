@@ -12,6 +12,7 @@ Run for a SpringApplication class. Navigate to `http://localhost:8080/`.
 🖱 Maven </br>
 🖱 Lombok </br>
 🖱 Swagger Doc </br>
+🖱 SonarLint  </br>
 
 ## Test
 
