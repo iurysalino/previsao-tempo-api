@@ -1,39 +1,42 @@
 package com.github.iurysalino.previsaotempoapi.service.impl;
 
-import com.github.iurysalino.previsaotempoapi.model.Main;
+import com.github.iurysalino.previsaotempoapi.exceptions.CityNameInvalidException;
+import com.github.iurysalino.previsaotempoapi.exceptions.CityNotFoundException;
+import com.github.iurysalino.previsaotempoapi.exceptions.ClientWeatherException;
 import com.github.iurysalino.previsaotempoapi.model.Root;
+import com.github.iurysalino.previsaotempoapi.model.WeatherUrl;
 import com.github.iurysalino.previsaotempoapi.service.WeatherService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class WeatherServiceImpl implements WeatherService {
 
-    Main main = new Main();
-    @Value("${api.key}")
-    private String apiKey;
-    @Value("${url.api}")
-    private String urlApi;
+    private final String apiKey;
+    private final String urlApi;
+
+    // fazer injeção pelo construtor fica mais facil de testar, precisa usar reflection
+    public WeatherServiceImpl(@Value("${api.key}") String apiKey, @Value("${url.api}") String urlApi) {
+        this.apiKey = apiKey;
+        this.urlApi = urlApi;
+    }
 
     @Override
-    public Root findConditionsByCityName(String cityName) {
+    public Root findByCityName(String cityName) throws CityNotFoundException, ClientWeatherException, CityNameInvalidException {
         RestTemplate restTemplate = new RestTemplate();
-        StringBuilder stringBuilder = new StringBuilder();
-        String urlFinal = stringBuilder
-                .append(urlApi)
-                .append(cityName)
-                .append("&lang=pt_br")
-                .append("&appid=")
-                .append(apiKey)
-                .append("&units=metric")
-                .toString();
-        ResponseEntity<Root> root = restTemplate.getForEntity(urlFinal, Root.class);
-        System.out.println("Temperatura: "+ Math.round(root.getBody().getMain().getTemp())+"º");
-        System.out.println("Temperatura Máxima: "+ Math.round(root.getBody().getMain().getTemp_max())+ "º");
-        System.out.println("Temperatura Mínima: "+ Math.round(root.getBody().getMain().getTemp_min())+ "º");
-        System.out.println("Céu: "+ root.getBody().getWeather().get(0).getDescription());
-        return root.getBody();
+        var url = new WeatherUrl(urlApi, cityName, apiKey, "pt_br", "metric");
+
+        try {
+            ResponseEntity<Root> response = restTemplate.getForEntity(url.toString(), Root.class);
+            return response.getBody();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new CityNotFoundException();
+        } catch (Exception e) {
+            // esse cara é muito generico, seria legal explorar os erros da api
+            throw new ClientWeatherException();
+        }
     }
 }
